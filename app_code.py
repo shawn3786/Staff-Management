@@ -4,9 +4,7 @@ from pathlib import Path
 from datetime import date
 import json
 import urllib.parse
-from fpdf import FPDF
 
-# -------------------- Config --------------------
 DATA_FILE = Path("data.json")
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
