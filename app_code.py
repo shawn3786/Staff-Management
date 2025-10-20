@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import date
 import json
 import urllib.parse
+from fpdf import FPDF
 
 # -------------------- Config --------------------
 DATA_FILE = Path("data.json")
