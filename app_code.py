@@ -1,23 +1,3 @@
-"""
-Simple Shift Manager — Streamlit (free, manual notifications)
-
-Features (final design):
-- Single-file Streamlit app with two modes: Manager (default) and Employee (via token in URL).
-- Manager assigns tasks to employees by date and shift, generates a per-employee link, and gets a ready-to-copy message for WhatsApp/SMS.
-- Employees open their unique link on phone, see today’s tasks, mark them complete, and upload a photo as proof.
-- Data stored in a local JSON file (`data.json`) and uploaded images stored in `uploads/`.
-- No paid APIs required — manager manually sends the generated WhatsApp/SMS message.
-
-How to run:
-1. pip install streamlit
-2. streamlit run simple_shift_manager_streamlit.py
-3. Open the app in your browser (manager view). To test employee behavior, open the generated link in a new tab or on a phone.
-
-Notes & next steps:
-- For small teams this local JSON storage is fine. For production use Google Sheets, Firebase, or a proper database and cloud storage.
-- Optional later upgrade: integrate Twilio/WhatsApp Cloud API or SendGrid for automated notifications.
-"""
-
 import streamlit as st
 from uuid import uuid4
 from pathlib import Path
