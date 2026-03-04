@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Portal - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #313131;
+            --secondary: #6c757d;
+            --success: #FE5F55;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Main content */
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        /* Login options */
+        .login-options {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .option-card {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .option-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+        }
+
+        .admin-icon {
+            background: rgba(61, 213, 152, 0.1);
+            color: var(--success);
+        }
+
+        .employee-icon {
+            background: rgba(61, 213, 152, 0.1);
+            color: var(--success);
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .option-desc {
+            color: var(--secondary);
+            margin-bottom: 25px;
+        }
+
+        /* Login forms */
+        .login-form {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .form-subtitle {
+            color: var(--secondary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #616161;
+        }
+
+        .btn-back {
+            background: #f1f5f9;
+            color: var(--dark);
+            margin-top: 15px;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">CompanyPortal</div>
+    </header>
+
+    <!-- Main content -->
+    <div class="container">
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="color:red">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Login options -->
+        <div class="login-options" id="loginOptions">
+            <div class="option-card" onclick="showAdminLogin()">
+                <div class="option-icon admin-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3 class="option-title">Admin Login</h3>
+                <p class="option-desc">Access the admin dashboard with your credentials</p>
+                <button class="btn btn-primary">Login as Admin</button>
+            </div>
+
+            <div class="option-card" onclick="showEmployeeLogin()">
+                <div class="option-icon employee-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="option-title">Employee Login</h3>
+                <p class="option-desc">Access your account with your employee ID</p>
+                <button class="btn btn-primary">Login as Employee</button>
+            </div>
+        </div>
+
+        <!-- Admin login form -->
+        <div class="login-form" id="adminLoginForm">
+            <h2 class="form-title">Admin Login</h2>
+            <p class="form-subtitle">Enter your credentials to continue</p>
+
+            <form method="POST" action="{% url 'admin_login' %}">
+
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" name="password" placeholder="Enter your password" required>
+                </div>
+                {% if error %}
+                <p style="color:red; margin-top:10px;">{{ error }}</p>
+                {% endif %}
+
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <button class="btn btn-back" onclick="showLoginOptions()">Back to options</button>
+        </div>
+
+        <!-- Employee login form -->
+        <div class="login-form" id="employeeLoginForm">
+            <h2 class="form-title">Employee Login</h2>
+            <p class="form-subtitle">Enter your employee ID to continue</p>
+
+            <form method="POST" action="{% url 'employee_login' %}">
+
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="employeeId">Employee ID</label>
+                    <input type="text" id="employeeId" name="employee_id" placeholder="Enter your employee ID" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <button class="btn btn-back" onclick="showLoginOptions()">Back to options</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const loginOptions = document.getElementById('loginOptions');
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const employeeLoginForm = document.getElementById('employeeLoginForm');
+
+        // Show login options
+        function showLoginOptions() {
+            loginOptions.style.display = 'flex';
+            adminLoginForm.style.display = 'none';
+            employeeLoginForm.style.display = 'none';
+        }
+
+        // Show admin login form
+        function showAdminLogin() {
+            loginOptions.style.display = 'none';
+            adminLoginForm.style.display = 'block';
+            employeeLoginForm.style.display = 'none';
+        }
+
+        // Show employee login form
+        function showEmployeeLogin() {
+            loginOptions.style.display = 'none';
+            adminLoginForm.style.display = 'none';
+            employeeLoginForm.style.display = 'block';
+        }
+
+        // Initialize page
+        showLoginOptions(); 
+    </script>
+</body>
+</html>

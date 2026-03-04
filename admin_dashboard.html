@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-color: #f5f7fa;
+      --card-bg: #ffffff;
+      --primary: #4a6cf7;
+      --secondary: #6c757d;
+      --success: #3dd598;
+      --warning: #ff9f43;
+      --danger: #fc5a5a;
+      --info: #50b5ff;
+      --purple: #8c68cd;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 30px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+
+    .greeting {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .greeting span {
+      color: var(--primary);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .action-btn {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--bg-color);
+      border: none;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .action-btn i {
+      font-size: 1.2rem;
+    }
+
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.7rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Dashboard grid */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+      padding: 30px;
+      background: var(--bg-color);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .card-content {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 10px 0;
+      color: var(--text-dark);
+    }
+
+    .card-footer {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-footer i {
+      margin-right: 8px;
+    }
+
+    /* Card sizes */
+    .card-small {
+      grid-column: span 3;
+    }
+
+    .card-medium {
+      grid-column: span 4;
+    }
+
+    .card-large {
+      grid-column: span 6;
+    }
+
+    .card-tall {
+      grid-row: span 2;
+    }
+
+    /* Chart container */
+    .chart-container {
+      height: 140px;
+      margin-top: 16px;
+    }
+
+    /* Calendar */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .calendar-day {
+      text-align: center;
+      padding: 8px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.85rem;
+    }
+
+    .calendar-day:hover {
+      background-color: rgba(74, 108, 247, 0.1);
+    }
+
+    .calendar-day.header {
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: default;
+      font-size: 0.8rem;
+    }
+
+    .calendar-day.header:hover {
+      background-color: transparent;
+    }
+
+    .calendar-day.today {
+      background: var(--primary);
+      color: white;
+    }
+
+    .calendar-day.event {
+      background-color: rgba(255, 107, 139, 0.15);
+      color: #ff6b8b;
+    }
+
+    /* Social media icons */
+    .social-icons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+    }
+
+    .social-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: white;
+      transition: transform 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .facebook {
+      background: #3b5998;
+    }
+
+    .instagram {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    }
+
+    .twitter {
+      background: #1da1f2;
+    }
+
+    /* Employee list */
+    .employee-list {
+      margin-top: 15px;
+    }
+
+    .employee-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .employee-item:last-child {
+      border-bottom: none;
+    }
+
+    .employee-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      margin-right: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .employee-name {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .employee-dept {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* Responsive design */
+    @media (max-width: 1200px) {
+      .card-small {
+        grid-column: span 4;
+      }
+
+      .card-medium {
+        grid-column: span 6;
+      }
+
+      .card-large {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 15px;
+      }
+
+      .card-small, .card-medium, .card-large {
+        grid-column: 1;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+        padding: 15px;
+      }
+
+      .topbar-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="greeting" id="time-greeting">Good Morning, <span>Admin</span></div>
+    <div class="topbar-actions">
+      <button class="action-btn">
+        <i class="fas fa-envelope"></i>
+      </button>
+      <button class="action-btn">
+        <i class="fas fa-bell"></i>
+        <span class="badge">3</span>
+      </button>
+      <button class="action-btn">
+        <i class="fas fa-globe"></i>
+      </button>
+      <button class="action-btn">
+        <i class="fas fa-user-circle"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard cards -->
+    <div class="dashboard">
+      <div class="card card-large branches">
+        <a href="{% url 'branches_list' %}" style="text-decoration:none; color:inherit;">
+          <div class="card-header">
+            <h3 class="card-title">Branches</h3>
+            <div class="card-icon" style="background: rgba(74, 108, 247, 0.1); color: var(--primary);">
+              <i class="fas fa-code-branch"></i>
+            </div>
+          </div>
+          <div class="card-body">
+            Manage your branches here.
+          </div>
+       </a>
+    </div>
+
+    <div class="card card-small staff"style="background-color: #EAE6E4;">
+      <div class="card-header">
+        <h3 class="card-title">Office Staff</h3>
+        <div class="card-icon" style="background: rgba(61, 213, 152, 0.1); color: var(--success);">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+      <div class="card-content">120</div>
+      <div class="card-footer">
+        <i class="fas fa-user-check"></i> 8 on leave today
+      </div>
+    </div>
+
+    <div class="card card-small meetings">
+      <div class="card-header">
+        <h3 class="card-title">Today's Meetings</h3>
+        <div class="card-icon" style="background: rgba(255, 159, 67, 0.1); color: var(--warning);">
+          <i class="fas fa-handshake"></i>
+        </div>
+      </div>
+      <div class="card-content">3</div>
+      <div class="card-footer">
+        <i class="fas fa-clock"></i> Next at 11:00 AM
+      </div>
+    </div>
+
+    <div class="card card-small employee" style="background: linear-gradient(170deg,#EA3355, #F5EFEB);">
+      <div class="card-header">
+        <h3 class="card-title">Best Employee</h3>
+        <div class="card-icon" style="background: rgba(140, 104, 205, 0.1); color: var(--purple);">
+          <i class="fas fa-trophy"></i>
+        </div>
+      </div>
+      <div class="card-content">Shawn</div>
+      <div class="card-footer">
+        <i class="fas fa-award"></i> Sales Department
+      </div>
+    </div>
+
+    <div class="card card-medium projects"style="background: linear-gradient(100deg,#DBE64C,#F6F7ED);">
+      <div class="card-header">
+        <h3 class="card-title">Open Projects</h3>
+        <div class="card-icon" style="background: rgba(252, 90, 90, 0.1); color: var(--danger);">
+          <i class="fas fa-folder-open"></i>
+        </div>
+      </div>
+      <div class="card-content">6</div>
+      <div class="card-footer">
+        <i class="fas fa-clock"></i> 2 nearing deadline
+      </div>
+    </div>
+
+    <div class="card card-medium salaries"style="background-color: #fae7e3;">
+      <div class="card-header">
+        <h3 class="card-title">Monthly Salaries</h3>
+        <div class="card-icon" style="background: rgba(80, 181, 255, 0.1); color: var(--info);">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="salaryChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card card-small events">
+      <div class="card-header">
+        <h3 class="card-title">Upcoming Events</h3>
+        <div class="card-icon" style="background: rgba(255, 107, 139, 0.1); color: #ff6b8b;">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+      </div>
+      <div class="card-content">2</div>
+      <div class="card-footer">
+        <i class="fas fa-calendar"></i> Annual Meetup in 5 days
+      </div>
+    </div>
+
+      <!-- Leave applications Card -->
+    <div class="card card-small"style="background: linear-gradient(150deg,#4f7c82,#b8e3e9);">
+       <div class="card-header">
+        <h3 class="card-title">Leaves Applications</h3>
+         <div class="card-icon" style="background: rgba(252, 90, 90, 0.1); color: var(--danger);">
+           <i class="fas fa-file-contract"></i>
+         </div>
+       </div>
+       <div class="card-content">4</div>
+       <div class="card-footer">
+         <i class="fas fa-exclamation-triangle"></i> People waiting for approval
+      </div>
+    </div>
+    <!-- New Hire Staff Card -->
+    <div class="card card-small">
+      <div class="card-header">
+        <h3 class="card-title">Hire New Staff</h3>
+        <div class="card-icon" style="background: rgba(61, 213, 152, 0.1); color: var(--success);">
+          <i class="fas fa-user-plus"></i>
+        </div>
+      </div>
+      <div class="card-content">5</div>
+      <div class="card-footer">
+        <i class="fas fa-briefcase"></i> Open positions
+      </div>
+    </div>
+
+    <!-- Training Sessions Card -->
+    <div class="card card-small"style="background: linear-gradient(150deg,#6B104D,#FFE2E1);">
+      <div class="card-header">
+        <h3 class="card-title">Training Sessions</h3>
+        <div class="card-icon" style="background: rgba(255, 159, 67, 0.1); color: var(--warning);">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+      </div>
+      <div class="card-content">3</div>
+      <div class="card-footer">
+        <i class="fas fa-graduation-cap"></i> This week
+      </div>
+    </div>
+
+    <!-- Social Media Card -->
+    <div class="card card-small"style="background: linear-gradient(150deg,#573CFA,#FB8D1A,#FFFFFF);">
+      <div class="card-header">
+        <h3 class="card-title">Social Media</h3>
+        <div class="card-icon" style="background: rgba(59, 89, 152, 0.1); color: #3b5998;">
+          <i class="fas fa-hashtag"></i>
+        </div>
+      </div>
+      <div class="social-icons">
+        <div class="social-icon facebook">
+          <i class="fab fa-facebook-f"></i>
+        </div>
+        <div class="social-icon instagram">
+          <i class="fab fa-instagram"></i>
+        </div>
+        <div class="social-icon twitter">
+          <i class="fab fa-twitter"></i>
+        </div>
+      </div>
+      <div class="card-footer">
+        <i class="fas fa-chart-line"></i> 1.2K engagements
+      </div>
+    </div>
+
+    <!-- All Employees Card -->
+    <div class="card card-medium">
+      <div class="card-header">
+        <h3 class="card-title">All Employees</h3>
+        <div class="card-icon" style="background: rgba(74, 108, 247, 0.1); color: var(--primary);">
+          <i class="fas fa-address-card"></i>
+        </div>
+      </div>
+      <div class="employee-list">
+        <div class="employee-item">
+          <div class="employee-avatar">JD</div>
+          <div class="employee-name">John Doe</div>
+          <div class="employee-dept">Marketing</div>
+        </div>
+        <div class="employee-item">
+          <div class="employee-avatar">JS</div>
+          <div class="employee-name">Jane Smith</div>
+          <div class="employee-dept">Sales</div>
+        </div>
+        <div class="employee-item">
+          <div class="employee-avatar">RJ</div>
+          <div class="employee-name">Robert Johnson</div>
+          <div class="employee-dept">Development</div>
+        </div>
+        <div class="employee-item">
+          <div class="employee-avatar">EW</div>
+          <div class="employee-name">Emma Wilson</div>
+          <div class="employee-dept">HR</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <i class="fas fa-users"></i> 120 total employees
+      </div>
+    </div>
+
+    <!-- Expiring Contracts Card -->
+    <div class="card card-small"style="background: linear-gradient(150deg,#FE5F55, #F5EFEB);">
+      <div class="card-header">
+        <h3 class="card-title">Expiring Contracts</h3>
+        <div class="card-icon" style="background: rgba(252, 90, 90, 0.1); color: var(--danger);">
+          <i class="fas fa-file-contract"></i>
+        </div>
+      </div>
+      <div class="card-content">4</div>
+      <div class="card-footer">
+        <i class="fas fa-exclamation-triangle"></i> Renew within 30 days
+      </div>
+    </div>
+  </div>
+  <div class="card card-small calendar">
+    <div class="card-header">
+      <h3 class="card-title">Calendar</h3>
+      <div class="card-icon" style="background: rgba(161, 98, 247, 0.1); color: #a162f7;">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+    </div>
+  <div class="calendar-grid">
+      <div class="calendar-day header">S</div>
+      <div class="calendar-day header">M</div>
+      <div class="calendar-day header">T</div>
+      <div class="calendar-day header">W</div>
+      <div class="calendar-day header">T</div>
+      <div class="calendar-day header">F</div>
+      <div class="calendar-day header">S</div>
+
+      <div class="calendar-day">1</div>
+      <div class="calendar-day">2</div>
+      <div class="calendar-day">3</div>
+      <div class="calendar-day">4</div>
+      <div class="calendar-day">5</div>
+      <div class="calendar-day">6</div>
+      <div class="calendar-day">7</div>
+      <div class="calendar-day">8</div>
+      <div class="calendar-day">9</div>
+      <div class="calendar-day">10</div>
+      <div class="calendar-day today">11</div>
+      <div class="calendar-day">12</div>
+      <div class="calendar-day">13</div>
+      <div class="calendar-day">14</div>
+      <div class="calendar-day">15</div>
+      <div class="calendar-day event">16</div>
+      <div class="calendar-day">17</div>
+      <div class="calendar-day">18</div>
+      <div class="calendar-day">19</div>
+      <div class="calendar-day">20</div>
+      <div class="calendar-day event">21</div>
+      <div class="calendar-day">22</div>
+      <div class="calendar-day">23</div>
+      <div class="calendar-day">24</div>
+      <div class="calendar-day">25</div>
+      <div class="calendar-day">26</div>
+      <div class="calendar-day">27</div>
+      <div class="calendar-day">28</div>
+      <div class="calendar-day">29</div>
+      <div class="calendar-day">30</div>
+      <div class="calendar-day">31</div>
+    </div>
+  </div>
+
+  <script>
+    // Time-based greeting
+    function updateGreeting() {
+      const hour = new Date().getHours();
+      const greetingElement = document.getElementById('time-greeting');
+      let greeting;
+
+      if (hour < 12) {
+        greeting = 'Good Morning';
+      } else if (hour < 18) {
+        greeting = 'Good Afternoon';
+      } else {
+        greeting = 'Good Evening';
+      }
+
+      greetingElement.innerHTML = `${greeting}, <span>Admin</span>`;
+    }
+
+    // Initialize chart
+    document.addEventListener('DOMContentLoaded', function() {
+      updateGreeting();
+
+      const ctx = document.getElementById('salaryChart').getContext('2d');
+      const salaryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Branch A', 'Branch B', 'Branch C', 'Office'],
+          datasets: [{
+            data: [12000, 15000, 10000, 8000],
+            backgroundColor: ['#4a6cf7', '#3dd598', '#ff9f43', '#a162f7'],
+            borderWidth: 0,
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#2d3748',
+                font: {
+                  size: 11
+                }
+              }
+            }
+          },
+          cutout: '65%'
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-title {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .employee-list {
+            list-style: none;
+        }
+
+        .employee-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .employee-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .employee-id {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .employee-department {
+            background-color: #ecf0f1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #34495e;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .employee-details {
+            display: none;
+        }
+
+        .detail-section {
+            margin-bottom: 30px;
+        }
+
+        .detail-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.error {
+            background-color: #e74c3c;
+        }
+
+        .employee-type-options {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            color: #2980b9;
+        }
+
+        .terminate-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ecf0f1;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Employee Management System</div>
+            <div class="user-info">Manager Dashboard</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Main Dashboard View -->
+        <div id="dashboard-view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Employee Management</h2>
+                    <button id="add-employee-btn" class="btn btn-primary">Hire New Employee</button>
+                </div>
+
+                <div class="tab-container">
+                    <div class="tab active" data-tab="current">Current Employees</div>
+                    <div class="tab" data-tab="former">Former Employees</div>
+                </div>
+
+                <div class="tab-content active" id="current-employees">
+                    <ul class="employee-list" id="current-employee-list">
+                        <!-- Employee list will be populated by JavaScript -->
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="former-employees">
+                    <ul class="employee-list" id="former-employee-list">
+                        <!-- Former employee list will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Employee Form -->
+        <div id="add-employee-view" class="form-container">
+            <div class="back-btn" id="back-from-form">
+                ← Back to Employee List
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Hire New Employee</h2>
+                </div>
+
+                <form id="employee-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeId">Employee ID</label>
+                        <input type="text" id="employeeId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeType">Employee Type</label>
+                        <select id="employeeType" required>
+                            <option value="">Select Employee Type</option>
+                            <option value="office">Office Staff</option>
+                            <option value="production">Production</option>
+                            <option value="branch">Branch Work</option>
+                        </select>
+                    </div>
+
+                    <!-- Office Staff Options -->
+                    <div id="office-options" class="employee-type-options">
+                        <div class="form-group">
+                            <label for="officeRole">Office Role</label>
+                            <select id="officeRole">
+                                <option value="manager">Manager</option>
+                                <option value="hr">HR Specialist</option>
+                                <option value="accountant">Accountant</option>
+                                <option value="admin">Administrative Assistant</option>
+                                <option value="it">IT Support</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Production Options -->
+                    <div id="production-options" class="employee-type-options">
+                        <div class="form-group">
+                            <label for="productionRole">Production Role</label>
+                            <select id="productionRole">
+                                <option value="supervisor">Production Supervisor</option>
+                                <option value="operator">Machine Operator</option>
+                                <option value="assembler">Assembler</option>
+                                <option value="quality">Quality Control</option>
+                                <option value="technician">Maintenance Technician</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Branch Work Options -->
+                    <div id="branch-options" class="employee-type-options">
+                        <div class="form-group">
+                            <label for="branchLocation">Branch Location</label>
+                            <input type="text" id="branchLocation">
+                        </div>
+                        <div class="form-group">
+                            <label for="branchRole">Branch Role</label>
+                            <select id="branchRole">
+                                <option value="manager">Branch Manager</option>
+                                <option value="kitchen">Kitchen Crew</option>
+                                <option value="helper">Helper</option>
+                                <option value="cashier">Cashier</option>
+                                <option value="server">Server</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="residencePermit">Residence Permit Number</label>
+                        <input type="text" id="residencePermit">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractDetails">Contract Details</label>
+                        <textarea id="contractDetails" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractExpiry">Contract Expiry Date</label>
+                        <input type="date" id="contractExpiry">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractFile">Contract File Upload</label>
+                        <input type="file" id="contractFile">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hourlyWage">Hourly Wage ($)</label>
+                        <input type="number" id="hourlyWage" step="0.01">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bankName">Bank Name</label>
+                            <input type="text" id="bankName">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountNumber">Account Number</label>
+                            <input type="text" id="accountNumber">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="socialSecurity">Social Security Number</label>
+                            <input type="text" id="socialSecurity">
+                        </div>
+                        <div class="form-group">
+                            <label for="taxId">Tax ID</label>
+                            <input type="text" id="taxId">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergencyContact">Emergency Contact</label>
+                        <input type="text" id="emergencyContact">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergencyPhone">Emergency Contact Phone</label>
+                        <input type="tel" id="emergencyPhone">
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Employee Details View -->
+        <div id="employee-details-view" class="employee-details">
+            <div class="back-btn" id="back-from-details">
+                ← Back to Employee List
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" id="detail-employee-name">Employee Details</h2>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Personal Information</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">Employee ID:</div>
+                        <div class="detail-value" id="detail-id"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Full Name:</div>
+                        <div class="detail-value" id="detail-name"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value" id="detail-email"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Phone:</div>
+                        <div class="detail-value" id="detail-phone"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Address:</div>
+                        <div class="detail-value" id="detail-address"></div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Employment Details</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">Employee Type:</div>
+                        <div class="detail-value" id="detail-type"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Role:</div>
+                        <div class="detail-value" id="detail-role"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Hourly Wage:</div>
+                        <div class="detail-value" id="detail-wage"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contract Expiry:</div>
+                        <div class="detail-value" id="detail-expiry"></div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Financial Information</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">Bank Name:</div>
+                        <div class="detail-value" id="detail-bank"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Account Number:</div>
+                        <div class="detail-value" id="detail-account"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Social Security Number:</div>
+                        <div class="detail-value" id="detail-ssn"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tax ID:</div>
+                        <div class="detail-value" id="detail-tax"></div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Emergency Contact</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">Name:</div>
+                        <div class="detail-value" id="detail-emergency-name"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Phone:</div>
+                        <div class="detail-value" id="detail-emergency-phone"></div>
+                    </div>
+                </div>
+
+                <div class="terminate-section">
+                    <button id="terminate-btn" class="btn btn-danger">Terminate Employee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="confirmation-modal">
+        <div class="modal-content">
+            <h3>Confirm Termination</h3>
+            <p>Are you sure you want to terminate this employee? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="confirm-terminate" class="btn btn-danger">Yes, Terminate</button>
+                <button id="cancel-terminate" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for demonstration
+        let employees = [
+            {
+                id: "EMP001",
+                firstName: "John",
+                lastName: "Doe",
+                type: "office",
+                role: "Manager",
+                email: "john.doe@company.com",
+                phone: "+1 (555) 123-4567",
+                address: "123 Main St, New York, NY",
+                wage: 35.50,
+                bank: "City Bank",
+                account: "****5678",
+                ssn: "123-45-6789",
+                taxId: "TX987654",
+                emergencyContact: "Jane Doe",
+                emergencyPhone: "+1 (555) 987-6543",
+                contractExpiry: "2024-12-31",
+                status: "active"
+            },
+            {
+                id: "EMP002",
+                firstName: "Sarah",
+                lastName: "Smith",
+                type: "production",
+                role: "Quality Control",
+                email: "sarah.smith@company.com",
+                phone: "+1 (555) 234-5678",
+                address: "456 Oak Ave, Los Angeles, CA",
+                wage: 28.75,
+                bank: "National Bank",
+                account: "****4321",
+                ssn: "987-65-4321",
+                taxId: "TX123456",
+                emergencyContact: "Mike Smith",
+                emergencyPhone: "+1 (555) 876-5432",
+                contractExpiry: "2024-10-15",
+                status: "active"
+            }
+        ];
+
+        let formerEmployees = [];
+        let currentEmployeeId = null;
+
+        // DOM Elements
+        const dashboardView = document.getElementById('dashboard-view');
+        const addEmployeeView = document.getElementById('add-employee-view');
+        const employeeDetailsView = document.getElementById('employee-details-view');
+        const addEmployeeBtn = document.getElementById('add-employee-btn');
+        const backFromForm = document.getElementById('back-from-form');
+        const backFromDetails = document.getElementById('back-from-details');
+        const employeeForm = document.getElementById('employee-form');
+        const currentEmployeeList = document.getElementById('current-employee-list');
+        const formerEmployeeList = document.getElementById('former-employee-list');
+        const notification = document.getElementById('notification');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const confirmTerminate = document.getElementById('confirm-terminate');
+        const cancelTerminate = document.getElementById('cancel-terminate');
+        const terminateBtn = document.getElementById('terminate-btn');
+        const employeeType = document.getElementById('employeeType');
+        const officeOptions = document.getElementById('office-options');
+        const productionOptions = document.getElementById('production-options');
+        const branchOptions = document.getElementById('branch-options');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Event Listeners
+        addEmployeeBtn.addEventListener('click', showAddEmployeeForm);
+        backFromForm.addEventListener('click', showDashboard);
+        backFromDetails.addEventListener('click', showDashboard);
+        employeeForm.addEventListener('submit', addEmployee);
+        employeeType.addEventListener('change', toggleEmployeeOptions);
+        confirmTerminate.addEventListener('click', terminateEmployee);
+        cancelTerminate.addEventListener('click', hideConfirmationModal);
+        terminateBtn.addEventListener('click', showConfirmationModal);
+
+        // Tab functionality
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show corresponding content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `${tabId}-employees`) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Initialize the app
+        function init() {
+            renderEmployeeLists();
+        }
+
+        // Show the add employee form
+        function showAddEmployeeForm() {
+            dashboardView.style.display = 'none';
+            addEmployeeView.style.display = 'block';
+            employeeDetailsView.style.display = 'none';
+        }
+
+        // Show the dashboard
+        function showDashboard() {
+            dashboardView.style.display = 'block';
+            addEmployeeView.style.display = 'none';
+            employeeDetailsView.style.display = 'none';
+            renderEmployeeLists();
+        }
+
+        // Show employee details
+        function showEmployeeDetails(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+
+            // Set current employee ID
+            currentEmployeeId = employeeId;
+
+            // Populate details
+            document.getElementById('detail-employee-name').textContent = `${employee.firstName} ${employee.lastName}`;
+            document.getElementById('detail-id').textContent = employee.id;
+            document.getElementById('detail-name').textContent = `${employee.firstName} ${employee.lastName}`;
+            document.getElementById('detail-email').textContent = employee.email;
+            document.getElementById('detail-phone').textContent = employee.phone;
+            document.getElementById('detail-address').textContent = employee.address;
+            document.getElementById('detail-type').textContent = formatEmployeeType(employee.type);
+            document.getElementById('detail-role').textContent = employee.role;
+            document.getElementById('detail-wage').textContent = `$${employee.wage}/hour`;
+            document.getElementById('detail-expiry').textContent = formatDate(employee.contractExpiry);
+            document.getElementById('detail-bank').textContent = employee.bank;
+            document.getElementById('detail-account').textContent = employee.account;
+            document.getElementById('detail-ssn').textContent = employee.ssn;
+            document.getElementById('detail-tax').textContent = employee.taxId;
+            document.getElementById('detail-emergency-name').textContent = employee.emergencyContact;
+            document.getElementById('detail-emergency-phone').textContent = employee.emergencyPhone;
+
+            // Show the details view
+            dashboardView.style.display = 'none';
+            addEmployeeView.style.display = 'none';
+            employeeDetailsView.style.display = 'block';
+        }
+
+        // Toggle employee type options
+        function toggleEmployeeOptions() {
+            const type = employeeType.value;
+
+            // Hide all options first
+            officeOptions.style.display = 'none';
+            productionOptions.style.display = 'none';
+            branchOptions.style.display = 'none';
+
+            // Show the selected options
+            if (type === 'office') {
+                officeOptions.style.display = 'block';
+            } else if (type === 'production') {
+                productionOptions.style.display = 'block';
+            } else if (type === 'branch') {
+                branchOptions.style.display = 'block';
+            }
+        }
+
+        // Add a new employee
+        function addEmployee(e) {
+            e.preventDefault();
+
+            // Get form values
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const employeeId = document.getElementById('employeeId').value;
+            const employeeTypeValue = document.getElementById('employeeType').value;
+
+            // Determine role based on employee type
+            let role = '';
+            if (employeeTypeValue === 'office') {
+                role = document.getElementById('officeRole').value;
+            } else if (employeeTypeValue === 'production') {
+                role = document.getElementById('productionRole').value;
+            } else if (employeeTypeValue === 'branch') {
+                role = document.getElementById('branchRole').value;
+            }
+
+            const residencePermit = document.getElementById('residencePermit').value;
+            const contractDetails = document.getElementById('contractDetails').value;
+            const contractExpiry = document.getElementById('contractExpiry').value;
+            const hourlyWage = document.getElementById('hourlyWage').value;
+            const bankName = document.getElementById('bankName').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const socialSecurity = document.getElementById('socialSecurity').value;
+            const taxId = document.getElementById('taxId').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const emergencyContact = document.getElementById('emergencyContact').value;
+            const emergencyPhone = document.getElementById('emergencyPhone').value;
+
+            // Create new employee object
+            const newEmployee = {
+                id: employeeId,
+                firstName,
+                lastName,
+                type: employeeTypeValue,
+                role,
+                residencePermit,
+                contractDetails,
+                contractExpiry,
+                wage: parseFloat(hourlyWage),
+                bank: bankName,
+                account: accountNumber,
+                ssn: socialSecurity,
+                taxId,
+                email,
+                phone,
+                address,
+                emergencyContact,
+                emergencyPhone,
+                status: 'active'
+            };
+
+            // Add to employees array
+            employees.push(newEmployee);
+
+            // Show success notification
+            showNotification('Employee added successfully!', 'success');
+
+            // Reset form
+            employeeForm.reset();
+
+            // Hide employee type options
+            officeOptions.style.display = 'none';
+            productionOptions.style.display = 'none';
+            branchOptions.style.display = 'none';
+
+            // Return to dashboard
+            showDashboard();
+        }
+
+        // Render employee lists
+        function renderEmployeeLists() {
+            // Clear current lists
+            currentEmployeeList.innerHTML = '';
+            formerEmployeeList.innerHTML = '';
+
+            // Render current employees
+            employees.forEach(employee => {
+                if (employee.status === 'active') {
+                    const li = document.createElement('li');
+                    li.className = 'employee-item';
+                    li.innerHTML = `
+                        <div>
+                            <div class="employee-name">${employee.firstName} ${employee.lastName}</div>
+                            <div class="employee-id">${employee.id}</div>
+                        </div>
+                        <div class="employee-department">${formatEmployeeType(employee.type)}</div>
+                    `;
+                    li.addEventListener('click', () => showEmployeeDetails(employee.id));
+                    currentEmployeeList.appendChild(li);
+                }
+            });
+
+            // Render former employees
+            formerEmployees.forEach(employee => {
+                const li = document.createElement('li');
+                li.className = 'employee-item';
+                li.innerHTML = `
+                    <div>
+                        <div class="employee-name">${employee.firstName} ${employee.lastName}</div>
+                        <div class="employee-id">${employee.id}</div>
+                    </div>
+                    <div class="employee-department">${formatEmployeeType(employee.type)}</div>
+                `;
+                formerEmployeeList.appendChild(li);
+            });
+        }
+
+        // Show confirmation modal for termination
+        function showConfirmationModal() {
+            confirmationModal.style.display = 'flex';
+        }
+
+        // Hide confirmation modal
+        function hideConfirmationModal() {
+            confirmationModal.style.display = 'none';
+        }
+
+        // Terminate employee
+        function terminateEmployee() {
+            if (!currentEmployeeId) return;
+
+            // Find employee
+            const employeeIndex = employees.findIndex(emp => emp.id === currentEmployeeId);
+            if (employeeIndex === -1) return;
+
+            // Get employee
+            const employee = employees[employeeIndex];
+
+            // Update status
+            employee.status = 'terminated';
+
+            // Move to former employees
+            formerEmployees.push(employee);
+
+            // Remove from current employees
+            employees.splice(employeeIndex, 1);
+
+            // Hide modal
+            hideConfirmationModal();
+
+            // Show notification
+            showNotification('Employee terminated successfully!', 'success');
+
+            // Return to dashboard
+            showDashboard();
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            if (type === 'error') {
+                notification.classList.add('error');
+            }
+            notification.style.display = 'block';
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Format employee type for display
+        function formatEmployeeType(type) {
+            switch(type) {
+                case 'office': return 'Office Staff';
+                case 'production': return 'Production';
+                case 'branch': return 'Branch Work';
+                default: return type;
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>

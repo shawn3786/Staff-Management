@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ItFixx Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(90deg, #71797E 40%, #A9A9A9 60%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .word-container {
+            display: flex;
+            position: relative;
+        }
+
+        .letter {
+            opacity: 0;
+            font-weight: 900;
+            position: relative;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+        }
+
+        .letter-it {
+            font-size: 30vw;
+            color: #A9A9A9;
+        }
+
+        .letter-fixx {
+            font-size: 16vw;
+            color: #71797E;
+            align-self: flex-end;
+            margin-bottom: 0.5vw;
+        }
+
+        @media (min-width: 1200px) {
+            .letter-it {
+                font-size: 300px;
+            }
+
+            .letter-fixx {
+                font-size: 160px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .letter-it {
+                font-size: 28vw;
+            }
+
+            .letter-fixx {
+                font-size: 18vw;
+            }
+        }
+
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) rotate(-10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotate(0);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(30deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="word-container">
+        <span class="letter letter-it" id="letter-I">I</span>
+        <span class="letter letter-it" id="letter-t">t</span>
+        <span class="letter letter-fixx" id="letter-F">F</span>
+        <span class="letter letter-fixx" id="letter-i">i</span>
+        <span class="letter letter-fixx" id="letter-x1">x</span>
+        <span class="letter letter-fixx" id="letter-x2">x</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const letters = [
+                document.getElementById('letter-I'),
+                document.getElementById('letter-t'),
+                document.getElementById('letter-F'),
+                document.getElementById('letter-i'),
+                document.getElementById('letter-x1'),
+                document.getElementById('letter-x2')
+            ];
+
+            // Function to make letters appear one by one
+            function appearLetters(index) {
+                if (index >= letters.length) {
+                    // All letters have appeared, now make them fall after a delay
+                    setTimeout(makeLettersFall, 500);
+                    return;
+                }
+
+                letters[index].style.animation = `appear 0.6s forwards`;
+
+                setTimeout(() => {
+                    appearLetters(index + 1);
+                }, 300);
+            }
+
+            // Function to make letters fall down
+            function makeLettersFall() {
+                letters.forEach((letter, index) => {
+                    // Add a slight delay between each letter falling for a more natural effect
+                    setTimeout(() => {
+                        letter.style.animation = `fall ${1.5 + Math.random() * 0.5}s forwards ease-in`;
+                    }, index * 100);
+                });
+
+                // Restart the animation after all letters have fallen
+                setTimeout(() => {
+                    window.location.href = "/login-choice/";  
+                }, 2000);
+
+            }
+
+            // Function to reset the animation
+            function resetAnimation() {
+                letters.forEach(letter => {
+                    letter.style.animation = 'none';
+                    // Trigger reflow to restart animation
+                    void letter.offsetWidth;
+                });
+
+                // Start the animation sequence again after a brief pause
+                setTimeout(() => {
+                    appearLetters(0);
+                }, 300);
+            }
+
+            // Start the animation
+            appearLetters(0);
+        });
+    </script>
+</body>
+</html>
